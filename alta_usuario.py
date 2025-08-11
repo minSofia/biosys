@@ -32,7 +32,7 @@ def main(page: ft.Page):
             page.open(snackbar)
             return
 
-        # GUardar el usuario en la nube
+        # Guardar el usuario en la nube
         nuevo = at.Usuario(
             clave=clave,
             contra=contra,
@@ -46,48 +46,96 @@ def main(page: ft.Page):
         except Exception as error:
             snackbar = ft.SnackBar(ft.Text(error), bgcolor="red", show_close_icon=True)
         
-
+    def limpiar_formulario():
+        clave.value = ""
+        contra.value = ""
+        contra_2.value = ""
+        nombre.value = ""
+        admin.value = ""
+        page.update()
 
 
     #Configuración de la página
-    page.title = "Altas"
+    page.fonts = {
+        "Raleway-Regular": "Raleway-Regular.ttf",
+        "Raleway-Medium": "Raleway-Medium.ttf",
+        "Raleway-Bold": "Raleway-Bold.ttf"  
+    }
+    page.theme = ft.Theme(font_family="Raleway-Regular")
+    degradado = ft.LinearGradient(
+        begin=ft.alignment.top_center,
+        end=ft.alignment.bottom_center,
+        colors=["#008b51", "#75ba40"]
+    )
+    
+    page.title = "Alta de Usuario"
+    page.scroll = "auto"
     page.theme_mode = "light"
-    page.window.width = 800
-    page.window.height = 600
-    page.appbar = ft.AppBar(
-        title = ft.Text("Nuevo usuario"),
-        center_title=True,
-        leading = ft.Icon("person_add"),
-        color = "white",
-        bgcolor = "purple"
+    page.vertical_alignment = "center"
+    page.horizontal_alignment = "center"
+    page.padding = 35
+    
+    encabezado = ft.Container(
+        ft.Text(
+            "Agregar nueva usuario",
+            size=40,
+            color="#008b51",
+            font_family="Raleway-Bold",
+        ),
+        padding=ft.padding.only(bottom=40)
     )
     
     #Componentes de la pagina
-    txt_clave =ft.TextField(label="Clave del usuario")
-    txt_contra =ft.TextField(label="Contraseña", password = True)
-    txt_contra2 =ft.TextField(label="Confirmar contraseña", password = True)
-    txt_nombre =ft.TextField(label="Nombre completo")
+    txt_clave =ft.TextField(label="Clave del usuario", width=750, border_radius=30)
+    txt_contra =ft.TextField(label="Contraseña", password = True, width=750, border_radius=30)
+    txt_contra2 =ft.TextField(label="Confirmar contraseña", password = True, width=750, border_radius=30)
+    txt_nombre =ft.TextField(label="Nombre completo", width=750, border_radius=30)
     chk_admin =ft.Checkbox(label="¿Es administrador?")
-    btn_guardar =ft.FilledButton(
-        text="Guardar",
-        icon="save",
-        bgcolor = "green",
-        width=350,
-        on_click= guardar_usuario
-    )
-    btn_cancelar = ft.FilledButton(
-        text="Cancelar",
-        icon="cancel",
-        bgcolor = "red",
-        width=350,
-    )
-    fila = ft.Row(
-        controls=[btn_guardar, btn_cancelar],
-        alignment= "center")
 
-    #Añadir componentes
-    page.add(txt_clave, txt_contra, txt_contra2, txt_nombre, chk_admin, fila)
+    btn_guardar = ft.Container(
+        width=600,
+        height=40,
+        border_radius=30,
+        alignment=ft.alignment.center,
+        gradient=degradado,
+        margin=ft.margin.only(top=35),
+        content=ft.TextButton(
+            "Guardar registro",
+            style=ft.ButtonStyle(
+                color="white",
+                bgcolor=None,
+            ),
+            icon=ft.Icons.SAVE,
+            on_click=guardar_usuario,
+            width=600,
+            height=40,
+        )
+    )
+
+    formulario = ft.Column(
+        controls=[
+            encabezado, 
+            txt_clave, 
+            txt_contra, 
+            txt_contra2, 
+            txt_nombre, 
+            ft.Container(chk_admin, width=750),
+            btn_guardar
+        ],
+        alignment="center",
+        horizontal_alignment="center",
+        spacing=15
+    )
+    
+    
+    principal = ft.Container(
+        content=formulario,
+        alignment=ft.alignment.center,
+        expand=True
+    )
+
+    page.add(ft.Container(content=principal, expand=True, alignment=ft.alignment.center))
     page.update()
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    ft.app(target=main, view=ft.AppView.WEB_BROWSER)

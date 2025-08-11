@@ -18,9 +18,10 @@ class Bioenergia (Model):
     cantidad = fields.FloatField("cantidad")
     area = fields.FloatField("area")
     energia = fields.FloatField("energia")
-    municipio = fields.SelectField("municipio")
+    municipio = fields.TextField("municipio")
     latitud = fields.FloatField("latitud")
     longitud = fields.FloatField("longitud")
+    humedad = fields.FloatField("humedad")
     class Meta:
         api_key = "patsGFavIfvQKLWAi.b36b4400714bcef6def6951edbc607e5ae3356ce32a89c044d237e50b1ecda4c"
         base_id = "appEm46lOJ755qpUP"

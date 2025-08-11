@@ -2,37 +2,49 @@ import flet as ft
 import airtable as at
 
 def main(page: ft.Page):
-    usuarios = [] 
+    bioenergias = [] 
 
-    def buscar_usuarios(e):
+    def buscar_bioenergias(e):
         termino = txt_busqueda.value.lower()
         tabla.rows.clear()
 
-        for u in usuarios:
-            if termino in u.clave.lower() or termino in u.nombre.lower():
+        for u in bioenergias:
+            if termino in u.cultivo.lower() or termino in u.parte.lower() or termino in u.municipio.lower():
                 tabla.rows.append(
                     ft.DataRow(cells=[
-                        ft.DataCell(ft.Text(u.clave)),
-                        ft.DataCell(ft.Text(u.nombre)),
-                        ft.DataCell(ft.Checkbox(value=u.admin, disabled=True))
+                        ft.DataCell(ft.Text(u.cultivo)),
+                        ft.DataCell(ft.Text(u.parte)),
+                        ft.DataCell(ft.Text(str(u.cantidad))),
+                        ft.DataCell(ft.Text(str(u.humedad))),
+                        ft.DataCell(ft.Text(str(u.area))),
+                        ft.DataCell(ft.Text(str(u.energia))),
+                        ft.DataCell(ft.Text(u.municipio)),
+                        ft.DataCell(ft.Text(str(u.latitud))),
+                        ft.DataCell(ft.Text(str(u.longitud)))
                     ])
                 )
         page.update()
 
-    def cargar_usuarios():
-        nonlocal usuarios
-        usuarios = at.Usuario.all()  # Se carga una sola vez
-        for u in usuarios:
+    def cargar_bio():
+        nonlocal bioenergias
+        bioenergias = at.Bioenergia.all()  # Se carga una sola vez
+        for u in bioenergias:
             tabla.rows.append(
                 ft.DataRow(cells=[
-                    ft.DataCell(ft.Text(u.clave)),
-                    ft.DataCell(ft.Text(u.nombre)),
-                    ft.DataCell(ft.Checkbox(value=u.admin, disabled=True))
+                    ft.DataCell(ft.Text(u.cultivo)),
+                    ft.DataCell(ft.Text(u.parte)),
+                    ft.DataCell(ft.Text(str(u.cantidad))),
+                    ft.DataCell(ft.Text(str(u.humedad))),
+                    ft.DataCell(ft.Text(str(u.area))),
+                    ft.DataCell(ft.Text(str(u.energia))),
+                    ft.DataCell(ft.Text(u.municipio)),
+                    ft.DataCell(ft.Text(str(u.latitud))),
+                    ft.DataCell(ft.Text(str(u.longitud)))
                 ])
             )
 
     # Configuración visual
-    page.title = "Consulta de Usuarios"
+    page.title = "Consulta de Bioenergias"
     page.theme_mode = "light"
     page.fonts = {
         "Raleway-Regular": "Raleway-Regular.ttf",
@@ -48,7 +60,7 @@ def main(page: ft.Page):
     background = ft.Container(
         expand=True,
         content=ft.Image(
-            src="consultausu.jpg",
+            src="consultabio.jpg",
             fit=ft.ImageFit.COVER,
             width=page.width,
             height=page.height
@@ -56,21 +68,26 @@ def main(page: ft.Page):
     )
 
     txt_busqueda = ft.TextField(
-        label="Buscar por clave o nombre",
+        label="Buscar por cultivo, parte o municipio",
         prefix_icon="search",
-        on_change=buscar_usuarios,
+        on_change=buscar_bioenergias,
         border_radius=30,
         expand=True
     )
 
     tabla = ft.DataTable(
         columns=[
-            ft.DataColumn(label=ft.Text("Clave", font_family="Raleway-Bold")),
-            ft.DataColumn(label=ft.Text("Nombre", font_family="Raleway-Bold" )),
-            ft.DataColumn(label=ft.Text("Administrador", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Cultivo de origen", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Parte aprovechada del cultivo", font_family="Raleway-Bold" )),
+            ft.DataColumn(label=ft.Text("Cantidad (t)", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Porcentaje de humedad (%)", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Área cultivada (ha)", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Contenido energético (MJ/kg)", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Municipio", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Latitud", font_family="Raleway-Bold")),
+            ft.DataColumn(label=ft.Text("Longitud", font_family="Raleway-Bold")),
         ],
-        rows=[],
-        width=900
+        rows=[]
     )
 
     principal = ft.Container(
@@ -81,15 +98,14 @@ def main(page: ft.Page):
         padding=30,
         content=ft.Column(
             [
-                ft.Text("Consulta de Usuarios", size=40, font_family="Raleway-Bold"),
+                ft.Text("Consulta de Bioenergías", size=40, font_family="Raleway-Bold"),
                 txt_busqueda,
                 ft.Container(
                     content=ft.Column(
                         [
                             ft.Row(
                                 [tabla],
-                                expand=True,
-                                scroll=ft.ScrollMode.AUTO,  # Scroll horizontal
+                                scroll=ft.ScrollMode.ALWAYS  # Scroll horizontal
                             )
                         ],
                         scroll=ft.ScrollMode.AUTO  # Scroll vertical
@@ -130,7 +146,7 @@ def main(page: ft.Page):
         )
     )
 
-    cargar_usuarios()
+    cargar_bio()
     page.update()
 
 if __name__ == "__main__":
